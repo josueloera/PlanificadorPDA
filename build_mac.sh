@@ -14,12 +14,12 @@ pip3 install pyinstaller customtkinter fpdf openpyxl Pillow
 
 # Compilar usando PyInstaller
 echo "Compilando la aplicación (creando el archivo .app)..."
-python3 -m PyInstaller --name HorariosPDA --windowed --noconsole \
+python3 -m PyInstaller --name HorariosEscolares --windowed --noconsole \
     --add-data "$(python3 -c 'import customtkinter; import os; print(os.path.dirname(customtkinter.__file__))'):customtkinter/" \
     src/main.py
 
 echo "=========================================="
 echo "¡Compilación Exitosa!"
-echo "Tu aplicación para Mac se encuentra en la carpeta 'dist/' bajo el nombre 'HorariosPDA.app'."
-echo "Puedes arrastrar 'HorariosPDA.app' a tu carpeta de Aplicaciones."
+echo "Tu aplicación para Mac se encuentra en la carpeta 'dist/' bajo el nombre 'HorariosEscolares.app'."
+echo "Puedes arrastrar 'HorariosEscolares.app' a tu carpeta de Aplicaciones."
 echo "=========================================="

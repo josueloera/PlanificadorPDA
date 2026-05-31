@@ -26,15 +26,15 @@ jobs:
     - name: Compilar con PyInstaller
       run: |
         CTK_PATH=$(python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))")
-        pyinstaller --name HorariosPDA --windowed --noconsole --add-data "$CTK_PATH:customtkinter/" src/main.py
+        pyinstaller --name HorariosEscolares --windowed --noconsole --add-data "$CTK_PATH:customtkinter/" src/main.py
         
         # Comprimir la carpeta .app en un ZIP para evitar corrupción en la descarga
         cd dist
-        zip -r HorariosPDA-Mac.zip HorariosPDA.app
+        zip -r HorariosEscolares-Mac.zip HorariosEscolares.app
 
     - name: Subir artefacto (Archivo .app)
       uses: actions/upload-artifact@v4
       with:
-        name: HorariosPDA-Mac
-        path: dist/HorariosPDA-Mac.zip
+        name: HorariosEscolares-Mac
+        path: dist/HorariosEscolares-Mac.zip
         retention-days: 7
