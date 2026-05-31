@@ -1,0 +1,83 @@
+{
+    "nombre_escuela": "Instituto Tecnológico de Diagnóstico Avanzado",
+    "ciclo_escolar": "2026-2027",
+    "grupos": {
+        "1A": [
+            {"materia": "Matem\u00e1ticas", "docente": "Prof. Turing", "horas": 5, "modo": "auto"},
+            {"materia": "F\u00edsica", "docente": "Prof. Einstein", "horas": 4, "modo": "auto"},
+            {"materia": "Qu\u00edmica", "docente": "Prof. Curie", "horas": 4, "modo": "auto"},
+            {"materia": "Historia", "docente": "Prof. Herodoto", "horas": 3, "modo": "auto"},
+            {"materia": "Literatura", "docente": "Prof. Shakespeare", "horas": 4, "modo": "auto"}
+        ],
+        "1B": [
+            {"materia": "Matem\u00e1ticas", "docente": "Prof. Turing", "horas": 5, "modo": "auto"},
+            {"materia": "F\u00edsica", "docente": "Prof. Einstein", "horas": 4, "modo": "auto"},
+            {"materia": "Historia", "docente": "Prof. Herodoto", "horas": 3, "modo": "auto"},
+            {"materia": "Biolog\u00eda", "docente": "Prof. Darwin", "horas": 4, "modo": "auto"},
+            {"materia": "Literatura", "docente": "Prof. Shakespeare", "horas": 4, "modo": "auto"}
+        ],
+        "2A": [
+            {"materia": "Programaci\u00f3n", "docente": "Prof. Lovelace", "horas": 6, "modo": "auto"},
+            {"materia": "F\u00edsica", "docente": "Prof. Einstein", "horas": 3, "modo": "auto"},
+            {"materia": "Matem\u00e1ticas", "docente": "Prof. Turing", "horas": 5, "modo": "auto"},
+            {"materia": "Literatura", "docente": "Prof. Shakespeare", "horas": 3, "modo": "auto"},
+            {"materia": "M\u00fasica", "docente": "Prof. Mozart", "horas": 2, "modo": "auto"}
+        ],
+        "2B": [
+            {"materia": "Programaci\u00f3n", "docente": "Prof. Lovelace", "horas": 6, "modo": "auto"},
+            {"materia": "Qu\u00edmica", "docente": "Prof. Curie", "horas": 4, "modo": "auto"},
+            {"materia": "Biolog\u00eda", "docente": "Prof. Darwin", "horas": 4, "modo": "auto"},
+            {"materia": "Historia", "docente": "Prof. Herodoto", "horas": 3, "modo": "auto"},
+            {"materia": "M\u00fasica", "docente": "Prof. Mozart", "horas": 2, "modo": "auto"}
+        ],
+        "3A": [
+            {"materia": "Programaci\u00f3n Avanzada", "docente": "Prof. Lovelace", "horas": 7, "modo": "auto"},
+            {"materia": "C\u00e1lculo", "docente": "Prof. Turing", "horas": 5, "modo": "auto"},
+            {"materia": "Biolog\u00eda", "docente": "Prof. Darwin", "horas": 4, "modo": "auto"},
+            {"materia": "Literatura", "docente": "Prof. Shakespeare", "horas": 3, "modo": "auto"}
+        ],
+        "3B": [
+            {"materia": "Programaci\u00f3n Avanzada", "docente": "Prof. Lovelace", "horas": 7, "modo": "auto"},
+            {"materia": "C\u00e1lculo", "docente": "Prof. Turing", "horas": 5, "modo": "auto"},
+            {"materia": "Qu\u00edmica", "docente": "Prof. Curie", "horas": 4, "modo": "auto"},
+            {"materia": "M\u00fasica", "docente": "Prof. Mozart", "horas": 3, "modo": "auto"}
+        ]
+    },
+    "horarios": {},
+    "bloqueos_docentes": {},
+    "disponibilidad_docentes": {
+        "Prof. Einstein": [
+            "Lunes",
+            "Martes",
+            "Mi\u00e9rcoles"
+        ],
+        "Prof. Curie": [
+            "Martes",
+            "Jueves",
+            "Viernes"
+        ],
+        "Prof. Mozart": [
+            "Lunes",
+            "Viernes"
+        ]
+    },
+    "dias": [
+        "Lunes",
+        "Martes",
+        "Mi\u00e9rcoles",
+        "Jueves",
+        "Viernes"
+    ],
+    "horas": [
+        "08:00",
+        "09:00",
+        "10:00",
+        "10:30",
+        "11:00",
+        "12:00",
+        "13:00"
+    ],
+    "indices_recreo": [
+        3
+    ]
+}

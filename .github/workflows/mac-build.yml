@@ -1,0 +1,40 @@
+name: Compilar para Mac
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+    - name: Clonar el repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Compilar con PyInstaller
+      run: |
+        CTK_PATH=$(python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))")
+        pyinstaller --name PlanificadorPDA --windowed --noconsole --add-data "$CTK_PATH:customtkinter/" src/main.py
+        
+        # Comprimir la carpeta .app en un ZIP para evitar corrupción en la descarga
+        cd dist
+        zip -r PlanificadorPDA-Mac.zip PlanificadorPDA.app
+
+    - name: Subir artefacto (Archivo .app)
+      uses: actions/upload-artifact@v4
+      with:
+        name: PlanificadorPDA-Mac
+        path: dist/PlanificadorPDA-Mac.zip
+        retention-days: 7
