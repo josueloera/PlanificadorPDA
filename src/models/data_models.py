@@ -38,6 +38,7 @@ class SchoolSystemModel:
         self.bloqueos_docentes = {} # { "(dia_idx, hora_idx, docente)": nombre_grupo }
         self.disponibilidad_docentes = {} # { docente: [dia1, dia2, ...] }
         self.horas_contrato_docentes = {} # { docente: horas_int }
+        self.materias_docentes = {} # { docente: [materia1, materia2, ...] }
         self.dias = DIAS_DEFAULT.copy()
         self.horas = HORAS_DEFAULT.copy()
         self.indices_recreo = []
@@ -58,6 +59,7 @@ class SchoolSystemModel:
             "bloqueos_docentes": bloqueos_str,
             "disponibilidad_docentes": self.disponibilidad_docentes,
             "horas_contrato_docentes": self.horas_contrato_docentes,
+            "materias_docentes": self.materias_docentes,
             "dias": self.dias,
             "horas": self.horas,
             "indices_recreo": self.indices_recreo
@@ -69,6 +71,7 @@ class SchoolSystemModel:
         self.grupos = data.get("grupos", {})
         self.disponibilidad_docentes = data.get("disponibilidad_docentes", {})
         self.horas_contrato_docentes = data.get("horas_contrato_docentes", {})
+        self.materias_docentes = data.get("materias_docentes", {})
         self.dias = data.get("dias", DIAS_DEFAULT.copy())
         self.horas = data.get("horas", HORAS_DEFAULT.copy())
         self.indices_recreo = data.get("indices_recreo", [])

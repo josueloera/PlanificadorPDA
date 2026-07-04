@@ -69,15 +69,18 @@ class ConfigView(ctk.CTkFrame):
 
         ctk.CTkLabel(card, text="Configuración de la Escuela", font=ctk.CTkFont(size=24, weight="bold"), text_color="white").pack(pady=20, anchor="w", padx=20)
 
+        # Instrucciones de ayuda
+        ctk.CTkLabel(card, text="Instrucciones: Rellena los datos de la escuela y los horarios de cada bloque. Escribe la hora en formato de rango (ej. 08:00 - 08:50) y marca 'Es Recreo' si aplica.", font=ctk.CTkFont(size=12, slant="italic"), text_color="gray").pack(pady=(0,10), padx=20, anchor="w")
+
         f_datos = ctk.CTkFrame(card, fg_color="transparent")
         f_datos.pack(fill="x", padx=20, pady=10)
         
         ctk.CTkLabel(f_datos, text="Nombre de la Escuela:", text_color="white").grid(row=0, column=0, padx=10, pady=10)
-        self.ent_escuela = ctk.CTkEntry(f_datos, width=300)
+        self.ent_escuela = ctk.CTkEntry(f_datos, width=300, placeholder_text="Ej: Esc. Primaria Benito Juárez")
         self.ent_escuela.grid(row=0, column=1, padx=10, pady=10)
         
         ctk.CTkLabel(f_datos, text="Ciclo Escolar:", text_color="white").grid(row=0, column=2, padx=10, pady=10)
-        self.ent_ciclo = ctk.CTkEntry(f_datos, width=150)
+        self.ent_ciclo = ctk.CTkEntry(f_datos, width=150, placeholder_text="Ej: 2025-2026")
         self.ent_ciclo.grid(row=0, column=3, padx=10, pady=10)
 
         ctk.CTkLabel(card, text="Configuración de Horas y Recreos", font=ctk.CTkFont(size=18, weight="bold"), text_color="white").pack(pady=10, anchor="w", padx=20)
@@ -89,7 +92,7 @@ class ConfigView(ctk.CTkFrame):
             row = ctk.CTkFrame(self.f_horas, fg_color="transparent")
             row.pack(fill="x", pady=5)
             ctk.CTkLabel(row, text=f"Bloque {i+1}: ", width=80, anchor="w", text_color="white").pack(side="left")
-            ent = ctk.CTkEntry(row, width=150)
+            ent = ctk.CTkEntry(row, width=150, placeholder_text="Ej: 08:00 - 08:50")
             ent.pack(side="left")
             var_r = ctk.BooleanVar()
             chk = ctk.CTkCheckBox(row, text="Es Recreo", variable=var_r, text_color="white")
@@ -151,32 +154,69 @@ class CatalogosView(ctk.CTkFrame):
         f_main = ctk.CTkFrame(card, fg_color="transparent")
         f_main.pack(fill="both", expand=True, padx=20, pady=(0,20))
         
+        # --- COLUMNA DOCENTES ---
         f_docentes = ctk.CTkFrame(f_main, fg_color="#1e1e1e", corner_radius=10)
         f_docentes.pack(side="left", fill="both", expand=True, padx=(0,10))
         ctk.CTkLabel(f_docentes, text="Registro de Docentes", font=ctk.CTkFont(size=18, weight="bold"), text_color="white").pack(pady=10)
         
+        # Agregar docente
         f_add_d = ctk.CTkFrame(f_docentes, fg_color="transparent")
         f_add_d.pack(fill="x", pady=5, padx=10)
-        self.ent_new_doc = ctk.CTkEntry(f_add_d, placeholder_text="Nombre del Docente")
+        self.ent_new_doc = ctk.CTkEntry(f_add_d, placeholder_text="Ej: Prof. Juan Pérez")
         self.ent_new_doc.pack(side="left", padx=5, expand=True, fill="x")
         ctk.CTkButton(f_add_d, text="Añadir", width=80, command=self.add_docente).pack(side="left", padx=5)
         
+        # Seleccionar docente
         self.combo_docente = ctk.CTkComboBox(f_docentes, values=[""], command=self.on_docente_select)
-        self.combo_docente.pack(fill="x", padx=15, pady=15)
+        self.combo_docente.pack(fill="x", padx=15, pady=10)
         
-        # New input for hours
-        f_horas_c = ctk.CTkFrame(f_docentes, fg_color="transparent")
-        f_horas_c.pack(fill="x", padx=15, pady=5)
-        ctk.CTkLabel(f_horas_c, text="Horas Semanales de Contrato:", text_color="white").pack(side="left")
-        self.ent_horas_contrato = ctk.CTkEntry(f_horas_c, width=80)
+        # Split Docentes: Izquierda (Disponibilidad) y Derecha (Materias)
+        f_doc_split = ctk.CTkFrame(f_docentes, fg_color="transparent")
+        f_doc_split.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        # Sub-Columna Izquierda (Horas, Días, Acciones de docente)
+        f_doc_left = ctk.CTkFrame(f_doc_split, fg_color="transparent")
+        f_doc_left.pack(side="left", fill="both", expand=True, padx=5)
+        
+        f_horas_c = ctk.CTkFrame(f_doc_left, fg_color="transparent")
+        f_horas_c.pack(fill="x", pady=5)
+        ctk.CTkLabel(f_horas_c, text="Horas Semanales Contrato:", text_color="white").pack(side="left")
+        self.ent_horas_contrato = ctk.CTkEntry(f_horas_c, width=60)
         self.ent_horas_contrato.pack(side="right")
         self.ent_horas_contrato.insert(0, "0")
         
-        self.f_dias = ctk.CTkFrame(f_docentes, fg_color="transparent")
-        self.f_dias.pack(fill="x", padx=15, pady=5)
-        self.vars_dias = {}
-        ctk.CTkButton(f_docentes, text="Guardar Datos del Docente", font=ctk.CTkFont(weight="bold"), command=self.save_disp).pack(pady=15)
+        ctk.CTkLabel(f_doc_left, text="Horas máximas de clase por semana.", font=ctk.CTkFont(size=11, slant="italic"), text_color="gray").pack(anchor="w", pady=(0, 10))
         
+        ctk.CTkLabel(f_doc_left, text="Disponibilidad (Días de trabajo):", text_color="white", font=ctk.CTkFont(weight="bold")).pack(anchor="w", pady=2)
+        self.f_dias = ctk.CTkFrame(f_doc_left, fg_color="transparent")
+        self.f_dias.pack(fill="x", pady=5)
+        self.vars_dias = {}
+        
+        # Botones de Docente
+        self.btn_save_disp = ctk.CTkButton(f_doc_left, text="Guardar Datos Docente", font=ctk.CTkFont(weight="bold"), command=self.save_disp)
+        self.btn_save_disp.pack(fill="x", pady=10)
+        
+        self.btn_del_doc = ctk.CTkButton(f_doc_left, text="Eliminar Docente", fg_color="#e74c3c", font=ctk.CTkFont(weight="bold"), command=self.delete_docente)
+        self.btn_del_doc.pack(fill="x", pady=5)
+        
+        # Sub-Columna Derecha (Materias que puede impartir)
+        f_doc_right = ctk.CTkFrame(f_doc_split, fg_color="transparent")
+        f_doc_right.pack(side="right", fill="both", expand=True, padx=5)
+        
+        ctk.CTkLabel(f_doc_right, text="Materias que Imparte:", text_color="white", font=ctk.CTkFont(weight="bold")).pack(anchor="w", pady=2)
+        
+        f_add_mat = ctk.CTkFrame(f_doc_right, fg_color="transparent")
+        f_add_mat.pack(fill="x", pady=5)
+        self.ent_materia_docente = ctk.CTkEntry(f_add_mat, placeholder_text="Ej: Matemáticas")
+        self.ent_materia_docente.pack(side="left", padx=2, expand=True, fill="x")
+        ctk.CTkButton(f_add_mat, text="+", width=40, command=self.add_materia_docente).pack(side="right", padx=2)
+        
+        self.list_materias_docente = tk.Listbox(f_doc_right, font=("Arial", 11), bg="#2b2b2b", fg="white", bd=0, highlightthickness=0, height=8)
+        self.list_materias_docente.pack(fill="both", expand=True, pady=5)
+        
+        ctk.CTkButton(f_doc_right, text="Eliminar Materia", fg_color="#e74c3c", command=self.del_materia_docente).pack(fill="x", pady=5)
+
+        # --- COLUMNA GRUPOS ---
         f_grupos = ctk.CTkFrame(f_main, fg_color="#1e1e1e", corner_radius=10)
         f_grupos.pack(side="right", fill="both", expand=True, padx=(10,0))
         ctk.CTkLabel(f_grupos, text="Registro de Grupos", font=ctk.CTkFont(size=18, weight="bold"), text_color="white").pack(pady=10)
@@ -188,13 +228,17 @@ class CatalogosView(ctk.CTkFrame):
         ctk.CTkButton(f_add_g, text="Añadir", width=80, command=self.add_grupo).pack(side="left", padx=5)
         
         self.list_grupos = tk.Listbox(f_grupos, font=("Arial", 14), bg="#2b2b2b", fg="white", bd=0, highlightthickness=0)
-        self.list_grupos.pack(fill="both", expand=True, padx=15, pady=15)
+        self.list_grupos.pack(fill="both", expand=True, padx=15, pady=10)
+        
+        self.btn_del_grupo = ctk.CTkButton(f_grupos, text="Eliminar Grupo Seleccionado", fg_color="#e74c3c", font=ctk.CTkFont(weight="bold"), command=self.delete_grupo)
+        self.btn_del_grupo.pack(fill="x", padx=15, pady=15)
 
     def add_docente(self):
         doc = self.ent_new_doc.get().strip()
         if doc and doc not in self.model.disponibilidad_docentes:
             self.model.disponibilidad_docentes[doc] = self.model.dias.copy()
             self.model.horas_contrato_docentes[doc] = 0
+            self.model.materias_docentes[doc] = []
             self.ent_new_doc.delete(0, "end")
             self.refresh_ui()
             self.combo_docente.set(doc)
@@ -245,6 +289,14 @@ class CatalogosView(ctk.CTkFrame):
             self.ent_horas_contrato.delete(0, "end")
             hrs_guardadas = self.model.horas_contrato_docentes.get(doc, 0)
             self.ent_horas_contrato.insert(0, str(hrs_guardadas))
+            
+            # Cargar materias del docente
+            self.list_materias_docente.delete(0, "end")
+            if doc in self.model.materias_docentes:
+                for mat in sorted(self.model.materias_docentes[doc]):
+                    self.list_materias_docente.insert("end", mat)
+        else:
+            self.list_materias_docente.delete(0, "end")
 
     def save_disp(self):
         doc = self.combo_docente.get().strip()
@@ -264,6 +316,79 @@ class CatalogosView(ctk.CTkFrame):
         messagebox.showinfo("Éxito", f"Datos actualizados para {doc}.")
         self.refresh_callback()
 
+    def add_materia_docente(self):
+        doc = self.combo_docente.get().strip()
+        if not doc or doc not in self.model.disponibilidad_docentes:
+            messagebox.showwarning("Aviso", "Selecciona un docente válido primero.")
+            return
+        mat = self.ent_materia_docente.get().strip()
+        if not mat: return
+        if doc not in self.model.materias_docentes:
+            self.model.materias_docentes[doc] = []
+        if mat not in self.model.materias_docentes[doc]:
+            self.model.materias_docentes[doc].append(mat)
+            self.ent_materia_docente.delete(0, "end")
+            self.on_docente_select(doc)
+            self.refresh_callback()
+        else:
+            messagebox.showwarning("Aviso", "Esta materia ya está registrada para este docente.")
+
+    def del_materia_docente(self):
+        doc = self.combo_docente.get().strip()
+        if not doc: return
+        sel = self.list_materias_docente.curselection()
+        if not sel: return
+        mat = self.list_materias_docente.get(sel[0])
+        if doc in self.model.materias_docentes and mat in self.model.materias_docentes[doc]:
+            self.model.materias_docentes[doc].remove(mat)
+            self.on_docente_select(doc)
+            self.refresh_callback()
+
+    def delete_docente(self):
+        doc = self.combo_docente.get().strip()
+        if not doc or doc not in self.model.disponibilidad_docentes:
+            messagebox.showwarning("Aviso", "Selecciona un docente válido para eliminar.")
+            return
+        confirm = messagebox.askyesno("Confirmar", f"¿Estás seguro de que deseas eliminar al docente '{doc}'?\nEsto también borrará todas sus asignaciones en los grupos y horarios.")
+        if confirm:
+            self.model.disponibilidad_docentes.pop(doc, None)
+            self.model.horas_contrato_docentes.pop(doc, None)
+            self.model.materias_docentes.pop(doc, None)
+            # Limpiar asignaciones
+            for g in list(self.model.grupos.keys()):
+                self.model.grupos[g] = [c for c in self.model.grupos[g] if c["docente"] != doc]
+            # Limpiar horarios
+            for g in list(self.model.horarios.keys()):
+                to_del = [k for k, v in self.model.horarios[g].items() if v.docente == doc]
+                for k in to_del:
+                    del self.model.horarios[g][k]
+            # Limpiar bloqueos
+            to_del_b = [k for k in self.model.bloqueos_docentes.keys() if k[2] == doc]
+            for k in to_del_b:
+                del self.model.bloqueos_docentes[k]
+            self.combo_docente.set("")
+            self.refresh_ui()
+            self.refresh_callback()
+            messagebox.showinfo("Éxito", f"Docente '{doc}' eliminado.")
+
+    def delete_grupo(self):
+        sel = self.list_grupos.curselection()
+        if not sel:
+            messagebox.showwarning("Aviso", "Selecciona un grupo de la lista para eliminar.")
+            return
+        g = self.list_grupos.get(sel[0])
+        confirm = messagebox.askyesno("Confirmar", f"¿Estás seguro de que deseas eliminar al grupo '{g}'?\nEsto borrará todas sus materias y horarios.")
+        if confirm:
+            self.model.grupos.pop(g, None)
+            self.model.horarios.pop(g, None)
+            # Limpiar bloqueos
+            to_del = [k for k, v in self.model.bloqueos_docentes.items() if v == g]
+            for k in to_del:
+                del self.model.bloqueos_docentes[k]
+            self.refresh_ui()
+            self.refresh_callback()
+            messagebox.showinfo("Éxito", f"Grupo '{g}' eliminado.")
+
 
 class AsignacionView(ctk.CTkFrame):
     def __init__(self, master, model, generator, refresh_callback):
@@ -278,6 +403,9 @@ class AsignacionView(ctk.CTkFrame):
 
         ctk.CTkLabel(card, text="Asignación de Materias", font=ctk.CTkFont(size=24, weight="bold"), text_color="white").pack(pady=20, anchor="w", padx=20)
 
+        # Instrucciones de ayuda
+        ctk.CTkLabel(card, text="Instrucciones: Vincula materias a tus grupos. Selecciona el grupo, luego al docente, la materia correspondiente (autocompletada desde catálogos) y las horas semanales.", font=ctk.CTkFont(size=12, slant="italic"), text_color="gray").pack(pady=(0,10), padx=20, anchor="w")
+
         f_top = ctk.CTkFrame(card, fg_color="transparent")
         f_top.pack(fill="x", padx=20, pady=10)
         ctk.CTkLabel(f_top, text="Grupo Oficial:", text_color="white").pack(side="left", padx=10, pady=10)
@@ -286,13 +414,14 @@ class AsignacionView(ctk.CTkFrame):
 
         f_cap = ctk.CTkFrame(card, fg_color="#1e1e1e", corner_radius=10)
         f_cap.pack(fill="x", padx=20, pady=10)
-        ctk.CTkLabel(f_cap, text="Materia:", text_color="white").grid(row=0, column=0, padx=10, pady=15)
-        self.ent_mat = ctk.CTkEntry(f_cap)
-        self.ent_mat.grid(row=0, column=1, padx=10, pady=15)
         
-        ctk.CTkLabel(f_cap, text="Docente Oficial:", text_color="white").grid(row=0, column=2, padx=10, pady=15)
-        self.combo_docente = ctk.CTkComboBox(f_cap, values=[""])
-        self.combo_docente.grid(row=0, column=3, padx=10, pady=15)
+        ctk.CTkLabel(f_cap, text="Docente Oficial:", text_color="white").grid(row=0, column=0, padx=10, pady=15)
+        self.combo_docente = ctk.CTkComboBox(f_cap, values=[""], command=self.on_docente_change)
+        self.combo_docente.grid(row=0, column=1, padx=10, pady=15)
+
+        ctk.CTkLabel(f_cap, text="Materia:", text_color="white").grid(row=0, column=2, padx=10, pady=15)
+        self.combo_mat = ctk.CTkComboBox(f_cap, values=[""])
+        self.combo_mat.grid(row=0, column=3, padx=10, pady=15)
 
         ctk.CTkLabel(f_cap, text="Horas/Semana:", text_color="white").grid(row=0, column=4, padx=10, pady=15)
         self.ent_horas = ctk.CTkEntry(f_cap, width=50)
@@ -336,6 +465,7 @@ class AsignacionView(ctk.CTkFrame):
             else: self.combo_grupo.set("")
             
         self.on_grupo_select()
+        self.on_docente_change()
 
     def on_grupo_select(self, val=None):
         self.tree.delete(*self.tree.get_children())
@@ -346,8 +476,21 @@ class AsignacionView(ctk.CTkFrame):
                 self.temp_data.append(c)
                 self.tree.insert("", "end", values=(c["materia"], c["docente"], c["horas"]))
 
+    def on_docente_change(self, val=None):
+        doc = self.combo_docente.get()
+        if doc in self.model.materias_docentes:
+            mats = self.model.materias_docentes[doc]
+            self.combo_mat.configure(values=mats if mats else [""])
+            if mats:
+                self.combo_mat.set(mats[0])
+            else:
+                self.combo_mat.set("")
+        else:
+            self.combo_mat.configure(values=[""])
+            self.combo_mat.set("")
+
     def add_materia(self):
-        mat = self.ent_mat.get().strip()
+        mat = self.combo_mat.get().strip()
         doc = self.combo_docente.get()
         hrs = self.ent_horas.get().strip()
         if not self.combo_grupo.get():
@@ -360,7 +503,7 @@ class AsignacionView(ctk.CTkFrame):
         if mat and doc and hrs.isdigit():
             self.temp_data.append({"materia": mat, "docente": doc, "horas": int(hrs), "modo": "auto"})
             self.tree.insert("", "end", values=(mat, doc, hrs))
-            self.ent_mat.delete(0, "end")
+            self.combo_mat.set("")
         else:
             messagebox.showwarning("Aviso", "Datos inválidos.")
 
