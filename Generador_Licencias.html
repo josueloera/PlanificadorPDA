@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Licencias - Horarios Escolares</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        input:read-only {
+            background: rgba(15, 23, 42, 0.4);
+            color: #38bdf8;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 25px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.8);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .notification {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #10b981;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="notification" id="notification">Serial copiado al portapapeles</div>
+
+    <div class="container">
+        <h1>Generador de Licencias</h1>
+
+        <div class="input-group">
+            <label for="machine_id">Código de PC del cliente</label>
+            <input type="text" id="machine_id" placeholder="Ej: 1A2B-3C4D-5E6F" autocomplete="off">
+        </div>
+
+        <button onclick="generateSerial()">Generar Serial</button>
+
+        <div class="input-group">
+            <label for="serial_output">Serial de Activación a enviar</label>
+            <input type="text" id="serial_output" readonly placeholder="Esperando código..." onclick="copyToClipboard()">
+        </div>
+    </div>
+
+    <script>
+        // MANTENER ESTA CLAVE IGUAL QUE EN auth.py
+        const SECRET_KEY = "HE_2026_MASTER_SECRET_PRO";
+
+        async function generateSerial() {
+            const machineIdInput = document.getElementById('machine_id');
+            const serialOutput = document.getElementById('serial_output');
+            
+            let machineId = machineIdInput.value.trim();
+            
+            if (!machineId) {
+                alert("Por favor ingresa el Código de PC del cliente.");
+                machineIdInput.focus();
+                return;
+            }
+            
+            // Limpiar guiones y poner en mayúsculas (igual que en Python)
+            let cleanMachineId = machineId.replace(/-/g, "").toUpperCase();
+            let rawString = `${cleanMachineId}_${SECRET_KEY}`;
+            
+            try {
+                // Hashear usando SHA-256
+                const msgBuffer = new TextEncoder().encode(rawString);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                
+                // Convertir el buffer a string hexadecimal
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                
+                // Tomar primeros 16 caracteres y dar formato
+                let serial = hashHex.substring(0, 16);
+                let formattedSerial = `${serial.substring(0,4)}-${serial.substring(4,8)}-${serial.substring(8,12)}-${serial.substring(12,16)}`;
+                
+                serialOutput.value = formattedSerial;
+                
+                // Efecto visual sutil
+                serialOutput.style.transform = "scale(1.02)";
+                setTimeout(() => {
+                    serialOutput.style.transform = "scale(1)";
+                }, 150);
+
+            } catch (error) {
+                console.error("Error al generar el hash:", error);
+                alert("Ocurrió un error al generar la licencia. Tu navegador no soporta criptografía Web.");
+            }
+        }
+
+        function copyToClipboard() {
+            const serialOutput = document.getElementById('serial_output');
+            if (serialOutput.value && serialOutput.value !== "Esperando código...") {
+                navigator.clipboard.writeText(serialOutput.value).then(() => {
+                    showNotification();
+                });
+            }
+        }
+
+        function showNotification() {
+            const notif = document.getElementById('notification');
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 2500);
+        }
+
+        // Permitir usar la tecla Enter
+        document.getElementById('machine_id').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                generateSerial();
+            }
+        });
+    </script>
+</body>
+</html>

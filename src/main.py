@@ -3,7 +3,17 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.ui.app import ModernApp
+from src.core.auth import Authenticator
+from src.ui.activation_view import ActivationWindow
 
-if __name__ == "__main__":
+def launch_main_app():
     app = ModernApp()
     app.mainloop()
+
+if __name__ == "__main__":
+    auth = Authenticator()
+    if auth.is_activated():
+        launch_main_app()
+    else:
+        activation_app = ActivationWindow(on_success_callback=launch_main_app)
+        activation_app.mainloop()
