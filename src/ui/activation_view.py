@@ -3,7 +3,7 @@ from tkinter import messagebox
 from src.core.auth import Authenticator
 
 class ActivationWindow(ctk.CTk):
-    def __init__(self, on_success_callback):
+    def __init__(self):
         super().__init__()
         self.title("Activación - Horarios Escolares")
         self.geometry("500x400")
@@ -17,7 +17,6 @@ class ActivationWindow(ctk.CTk):
         y = (self.winfo_screenheight() // 2) - (height // 2)
         self.geometry('{}x{}+{}+{}'.format(width, height, x, y))
         
-        self.on_success_callback = on_success_callback
         self.auth = Authenticator()
         
         self.setup_ui()
@@ -72,7 +71,5 @@ class ActivationWindow(ctk.CTk):
         if self.auth.save_activation(serial_input):
             messagebox.showinfo("Éxito", "¡El programa se ha activado correctamente!")
             self.destroy()
-            if self.on_success_callback:
-                self.on_success_callback()
         else:
             messagebox.showerror("Error", "El serial ingresado es incorrecto o no pertenece a esta computadora.")

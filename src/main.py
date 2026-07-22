@@ -12,8 +12,9 @@ def launch_main_app():
 
 if __name__ == "__main__":
     auth = Authenticator()
+    if not auth.is_activated():
+        activation_app = ActivationWindow()
+        activation_app.mainloop()
+        
     if auth.is_activated():
         launch_main_app()
-    else:
-        activation_app = ActivationWindow(on_success_callback=launch_main_app)
-        activation_app.mainloop()
