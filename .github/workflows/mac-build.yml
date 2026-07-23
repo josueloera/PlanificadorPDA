@@ -26,7 +26,7 @@ jobs:
     - name: Compilar con PyInstaller
       run: |
         CTK_PATH=$(python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))")
-        pyinstaller --name HorariosEscolares --windowed --noconsole --add-data "$CTK_PATH:customtkinter/" src/main.py
+        pyinstaller --name HorariosEscolares --windowed --noconsole --target-architecture universal2 --add-data "$CTK_PATH:customtkinter/" src/main.py
         
         # Comprimir la carpeta .app en un ZIP para evitar corrupción en la descarga
         cd dist
