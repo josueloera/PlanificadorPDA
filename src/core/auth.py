@@ -7,8 +7,10 @@ class Authenticator:
     def __init__(self):
         # Clave secreta para la generación del hash (asegura que nadie más pueda generar seriales válidos)
         self.SECRET_KEY = "HE_2026_MASTER_SECRET_PRO"
-        # Archivo donde se guardará el estado de activación (en la raíz del proyecto)
-        self.AUTH_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "activation.key")
+        # Archivo donde se guardará el estado de activación (en la carpeta del usuario para evitar errores de permisos)
+        app_dir = os.path.join(os.path.expanduser("~"), ".horarios_escolares")
+        os.makedirs(app_dir, exist_ok=True)
+        self.AUTH_FILE = os.path.join(app_dir, "activation.key")
 
     def get_machine_id(self):
         """
