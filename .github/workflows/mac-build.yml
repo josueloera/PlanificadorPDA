@@ -38,3 +38,13 @@ jobs:
         name: HorariosEscolares-Mac
         path: dist/HorariosEscolares-Mac.zip
         retention-days: 7
+
+    - name: Subir a GitHub Releases
+      uses: softprops/action-gh-release@v1
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      with:
+        tag_name: mac-latest
+        name: Instalador Mac Universal
+        files: dist/HorariosEscolares-Mac.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
