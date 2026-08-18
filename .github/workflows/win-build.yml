@@ -29,13 +29,16 @@ jobs:
     - name: Compilar con PyInstaller
       run: |
         $CTK_PATH = (python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))").Trim()
-        pyinstaller --name HorariosEscolares --onefile --windowed --noconsole --paths . --add-data "$CTK_PATH;customtkinter/" src/main.py
+        pyinstaller --name HorariosEscolares --windowed --noconsole --paths . --add-data "$CTK_PATH;customtkinter/" src/main.py
 
-    - name: Subir artefacto (Ejecutable)
+    - name: Compilar Instalador con Inno Setup
+      run: '& "C:\Program Files (x86)\Inno Setup 6\iscc.exe" setup.iss'
+
+    - name: Subir artefacto (Instalador de Windows)
       uses: actions/upload-artifact@v4
       with:
-        name: HorariosEscolares-Windows
-        path: dist/HorariosEscolares.exe
+        name: HorariosEscolares-Windows-Instalador
+        path: Output/InstaladorHorariosEscolares.exe
         retention-days: 7
 
     - name: Subir a GitHub Releases
@@ -43,8 +46,8 @@ jobs:
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       with:
         tag_name: win-latest
-        name: Horarios Escolares (Windows)
+        name: Instalador Windows
         prerelease: true
-        files: dist/HorariosEscolares.exe
+        files: Output/InstaladorHorariosEscolares.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
