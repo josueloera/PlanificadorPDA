@@ -32,35 +32,18 @@ jobs:
         $CTK_PATH = (python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))").Trim()
         pyinstaller --noconfirm --onedir --name HorariosEscolares --windowed --noconsole --paths . --add-data "$CTK_PATH;customtkinter/" src/main.py
 
-    - name: Instalar y Compilar con Inno Setup
+    - name: Compilar Instalador con NSIS
       run: |
-        Write-Host "Descargando Inno Setup..."
-        Invoke-WebRequest -Uri "https://github.com/jrsoftware/issrc/releases/download/is-6_2_2/innosetup-6.2.2.exe" -OutFile "inno.exe"
-        
-        Write-Host "Instalando Inno Setup..."
-        Start-Process -FilePath ".\inno.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-"
-        
-        Write-Host "Esperando a que termine la instalacion..."
-        $isccPath = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
-        $timeout = 120
-        $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-        while (!(Test-Path $isccPath)) {
-            if ($stopwatch.Elapsed.TotalSeconds -gt $timeout) {
-                Write-Error "Tiempo de espera agotado instalando Inno Setup."
-                exit 1
-            }
-            Start-Sleep -Seconds 2
-        }
-        Start-Sleep -Seconds 5 # Esperar un poco extra para que termine de escribir todos los archivos
-        
+        Write-Host "Instalando NSIS mediante Chocolatey..."
+        choco install nsis -y
         Write-Host "Compilando instalador..."
-        & $isccPath setup.iss
+        makensis setup.nsi
 
     - name: Subir artefacto (Instalador de Windows)
       uses: actions/upload-artifact@v4
       with:
         name: Instalador-Windows
-        path: Output/InstaladorHorariosEscolares.exe
+        path: InstaladorHorariosEscolares.exe
         retention-days: 7
 
     - name: Subir a GitHub Releases
@@ -70,6 +53,6 @@ jobs:
         tag_name: win-latest
         name: Instalador Windows
         prerelease: true
-        files: Output/InstaladorHorariosEscolares.exe
+        files: InstaladorHorariosEscolares.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
