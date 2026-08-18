@@ -38,8 +38,8 @@ jobs:
         ls dist/HorariosEscolares
 
     - name: Compilar Instalador con Inno Setup
-      shell: cmd
-      run: '"C:\Program Files (x86)\Inno Setup 6\iscc.exe" setup.iss'
+      run: |
+        python -c "import subprocess; result = subprocess.run(['C:\\Program Files (x86)\\Inno Setup 6\\iscc.exe', 'setup.iss'], capture_output=True, text=True); print('STDOUT:', result.stdout); print('STDERR:', result.stderr); exit(result.returncode)"
 
     - name: Subir artefacto (Instalador de Windows)
       uses: actions/upload-artifact@v4
