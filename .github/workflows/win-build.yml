@@ -37,15 +37,54 @@ jobs:
         ls dist
         ls dist/HorariosEscolares
 
-    - name: Compilar Instalador con NSIS
+    - name: Compilar Instalador
       run: |
-        & "C:\Program Files (x86)\NSIS\makensis.exe" setup.nsi
+        python -c "
+        import os
+        import subprocess
+        import sys
+
+        compiler = None
+        for root, dirs, files in os.walk(r'C:\Program Files (x86)'):
+            if 'iscc.exe' in files:
+                compiler = os.path.join(root, 'iscc.exe')
+                print('Found Inno Setup:', compiler)
+                break
+            elif 'makensis.exe' in files:
+                compiler = os.path.join(root, 'makensis.exe')
+                print('Found NSIS:', compiler)
+                break
+                
+        if not compiler:
+            for root, dirs, files in os.walk(r'C:\Program Files'):
+                if 'iscc.exe' in files:
+                    compiler = os.path.join(root, 'iscc.exe')
+                    break
+                elif 'makensis.exe' in files:
+                    compiler = os.path.join(root, 'makensis.exe')
+                    break
+        
+        if not compiler:
+            print('Could not find ISCC or NSIS!')
+            sys.exit(1)
+            
+        os.makedirs('Output', exist_ok=True)
+        script = 'setup.iss' if 'iscc' in compiler.lower() else 'setup.nsi'
+        print(f'Running {compiler} {script}...')
+        result = subprocess.run([compiler, script], capture_output=True, text=True)
+        print('STDOUT:', result.stdout)
+        print('STDERR:', result.stderr)
+        if result.returncode != 0:
+            sys.exit(result.returncode)
+        "
 
     - name: Subir artefacto (Instalador de Windows)
       uses: actions/upload-artifact@v4
       with:
         name: Instalador-Windows
-        path: InstaladorHorariosEscolares.exe
+        path: |
+          InstaladorHorariosEscolares.exe
+          Output/InstaladorHorariosEscolares.exe
         retention-days: 7
 
     - name: Subir a GitHub Releases
@@ -55,6 +94,8 @@ jobs:
         tag_name: win-latest
         name: Instalador Windows
         prerelease: true
-        files: InstaladorHorariosEscolares.exe
+        files: |
+          InstaladorHorariosEscolares.exe
+          Output/InstaladorHorariosEscolares.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
