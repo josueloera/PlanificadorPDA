@@ -677,6 +677,34 @@ class DragLabel(ctk.CTkLabel):
         self.win.attributes("-alpha", 0.8)
         lbl = ctk.CTkLabel(self.win, text=self.cget("text"), fg_color=self.cget("fg_color"), text_color="white", corner_radius=8, width=150, height=80)
         lbl.pack()
+        
+        # Highlight logic
+        grupo = self.item.grupo_id if self.view.modo_vista.get() == "docente" else self.view.combo.get()
+        docente = self.item.docente
+        dias = self.view.model.dias
+        
+        for (c, r), f in self.view.mapa_widgets.items():
+            if r in self.view.model.indices_recreo:
+                continue
+                
+            dia_nombre = dias[c]
+            is_valid = True
+            
+            # Check availability
+            if docente in self.view.model.disponibilidad_docentes:
+                if dia_nombre not in self.view.model.disponibilidad_docentes[docente]:
+                    is_valid = False
+            
+            # Check block by other group
+            c_dest = (c, r, docente)
+            if c_dest in self.view.model.bloqueos_docentes:
+                if self.view.model.bloqueos_docentes[c_dest] != grupo:
+                    is_valid = False
+                    
+            if is_valid:
+                f.configure(fg_color="#2ecc71") # Green
+            else:
+                f.configure(fg_color="#e74c3c") # Red
 
     def drag(self, e):
         if self.win:
@@ -685,6 +713,14 @@ class DragLabel(ctk.CTkLabel):
     def drop(self, e):
         if self.win:
             self.win.destroy()
+            
+        # Reset colors
+        for (c, r), f in self.view.mapa_widgets.items():
+            if r in self.view.model.indices_recreo:
+                f.configure(fg_color="#3b3b3b")
+            else:
+                f.configure(fg_color="#2b2b2b")
+                
         tgt = self.view.get_coords(e.x_root, e.y_root)
         if tgt:
             grupo = self.item.grupo_id if self.view.modo_vista.get() == "docente" else self.view.combo.get()
