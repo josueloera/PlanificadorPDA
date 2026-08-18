@@ -37,46 +37,11 @@ jobs:
         ls dist
         ls dist/HorariosEscolares
 
-    - name: Compilar Instalador
+    - name: Instalar y Compilar con Inno Setup
       run: |
-        python -c "
-        import os
-        import subprocess
-        import sys
-
-        compiler = None
-        for root, dirs, files in os.walk(r'C:\Program Files (x86)'):
-            if 'iscc.exe' in files:
-                compiler = os.path.join(root, 'iscc.exe')
-                print('Found Inno Setup:', compiler)
-                break
-            elif 'makensis.exe' in files:
-                compiler = os.path.join(root, 'makensis.exe')
-                print('Found NSIS:', compiler)
-                break
-                
-        if not compiler:
-            for root, dirs, files in os.walk(r'C:\Program Files'):
-                if 'iscc.exe' in files:
-                    compiler = os.path.join(root, 'iscc.exe')
-                    break
-                elif 'makensis.exe' in files:
-                    compiler = os.path.join(root, 'makensis.exe')
-                    break
-        
-        if not compiler:
-            print('Could not find ISCC or NSIS!')
-            sys.exit(1)
-            
-        os.makedirs('Output', exist_ok=True)
-        script = 'setup.iss' if 'iscc' in compiler.lower() else 'setup.nsi'
-        print(f'Running {compiler} {script}...')
-        result = subprocess.run([compiler, script], capture_output=True, text=True)
-        print('STDOUT:', result.stdout)
-        print('STDERR:', result.stderr)
-        if result.returncode != 0:
-            sys.exit(result.returncode)
-        "
+        Invoke-WebRequest -Uri "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe" -OutFile "inno.exe"
+        Start-Process -Wait -FilePath ".\inno.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-"
+        & "C:\Program Files (x86)\Inno Setup 6\iscc.exe" setup.iss
 
     - name: Subir artefacto (Instalador de Windows)
       uses: actions/upload-artifact@v4
