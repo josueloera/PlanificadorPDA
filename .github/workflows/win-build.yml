@@ -39,7 +39,7 @@ jobs:
 
     - name: Instalar y Compilar con Inno Setup
       run: |
-        Invoke-WebRequest -Uri "https://files.jrsoftware.org/is/6/innosetup-6.2.2.exe" -OutFile "inno.exe"
+        Invoke-WebRequest -Uri "https://github.com/jrsoftware/issrc/releases/download/is-6_2_2/innosetup-6.2.2.exe" -OutFile "inno.exe"
         Start-Process -Wait -FilePath ".\inno.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-"
         & "C:\Program Files (x86)\Inno Setup 6\iscc.exe" setup.iss
 
