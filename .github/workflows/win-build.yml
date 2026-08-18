@@ -26,30 +26,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Compilar con PyInstaller
+    - name: Compilar con PyInstaller (Windows Portable)
       run: |
-        Remove-Item *.spec -ErrorAction SilentlyContinue
-        $CTK_PATH = (python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))").Trim()
-        pyinstaller --name HorariosEscolares --windowed --noconsole --paths . --add-data "$CTK_PATH;customtkinter/" src/main.py
+        pyinstaller --noconfirm --onefile --windowed --icon "icon.ico" --add-data "scheduler_app/templates;scheduler_app/templates" --add-data "scheduler_app/static;scheduler_app/static" main.py --name HorariosEscolares
 
-    - name: Verificar archivos compilados
-      run: |
-        ls dist
-        ls dist/HorariosEscolares
-
-    - name: Instalar y Compilar con Inno Setup
-      run: |
-        Invoke-WebRequest -Uri "https://github.com/jrsoftware/issrc/releases/download/is-6_2_2/innosetup-6.2.2.exe" -OutFile "inno.exe"
-        Start-Process -Wait -FilePath ".\inno.exe" -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-"
-        & "C:\Program Files (x86)\Inno Setup 6\iscc.exe" setup.iss
-
-    - name: Subir artefacto (Instalador de Windows)
+    - name: Subir artefacto (Ejecutable Portable)
       uses: actions/upload-artifact@v4
       with:
-        name: Instalador-Windows
-        path: |
-          InstaladorHorariosEscolares.exe
-          Output/InstaladorHorariosEscolares.exe
+        name: HorariosEscolares-Windows-Portable
+        path: dist/HorariosEscolares.exe
         retention-days: 7
 
     - name: Subir a GitHub Releases
@@ -57,10 +42,8 @@ jobs:
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       with:
         tag_name: win-latest
-        name: Instalador Windows
+        name: Horarios Escolares Windows Portable
         prerelease: true
-        files: |
-          InstaladorHorariosEscolares.exe
-          Output/InstaladorHorariosEscolares.exe
+        files: dist/HorariosEscolares.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
