@@ -29,7 +29,7 @@ jobs:
     - name: Compilar con PyInstaller
       run: |
         $CTK_PATH = (python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))").Trim()
-        pyinstaller --name HorariosEscolares --onefile --windowed --noconsole --add-data "$CTK_PATH;customtkinter/" src/main.py
+        pyinstaller --name HorariosEscolares --onefile --windowed --noconsole --paths . --add-data "$CTK_PATH;customtkinter/" src/main.py
 
     - name: Subir artefacto (Ejecutable)
       uses: actions/upload-artifact@v4
