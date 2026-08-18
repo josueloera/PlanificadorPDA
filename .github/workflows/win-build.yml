@@ -28,7 +28,9 @@ jobs:
 
     - name: Compilar con PyInstaller (Windows)
       run: |
-        pyinstaller --noconfirm --onedir --windowed --icon "icon.ico" --add-data "scheduler_app/templates;scheduler_app/templates" --add-data "scheduler_app/static;scheduler_app/static" main.py --name HorariosEscolares
+        Remove-Item *.spec -ErrorAction SilentlyContinue
+        $CTK_PATH = (python -c "import customtkinter, os; print(os.path.dirname(customtkinter.__file__))").Trim()
+        pyinstaller --noconfirm --onedir --name HorariosEscolares --windowed --noconsole --paths . --add-data "$CTK_PATH;customtkinter/" src/main.py
 
     - name: Instalar y Compilar con Inno Setup
       run: |
