@@ -80,6 +80,11 @@ class ModernApp(ctk.CTk):
         self.frames["asignacion"].refresh_ui()
 
     def save_project(self):
+        from src.core.auth import Authenticator
+        if not Authenticator().is_activated():
+            messagebox.showwarning("Modo Prueba", "La opción de guardar el proyecto solo está disponible en la versión activada.")
+            return
+            
         filepath = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
         if filepath:
             self.model.save_to_file(filepath)

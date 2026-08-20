@@ -57,10 +57,19 @@ class ActivationWindow(ctk.CTk):
         self.btn_frame.pack(pady=10)
         
         self.btn_activate = ctk.CTkButton(self.btn_frame, text="Activar", command=self.activate, fg_color="green", hover_color="darkgreen")
-        self.btn_activate.pack(side="left", padx=10)
+        self.btn_activate.pack(side="left", padx=5)
+
+        self.btn_trial = ctk.CTkButton(self.btn_frame, text="Continuar en Modo Prueba", command=self.continue_trial_mode, fg_color="#f39c12", hover_color="#d68910", text_color="white")
+        self.btn_trial.pack(side="left", padx=5)
         
         self.btn_exit = ctk.CTkButton(self.btn_frame, text="Salir", command=self.destroy, fg_color="red", hover_color="darkred")
-        self.btn_exit.pack(side="left", padx=10)
+        self.btn_exit.pack(side="left", padx=5)
+        
+        self.continue_trial = False
+
+    def continue_trial_mode(self):
+        self.continue_trial = True
+        self.destroy()
         
     def activate(self):
         serial_input = self.entry_serial.get().strip()

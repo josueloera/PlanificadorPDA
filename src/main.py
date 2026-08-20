@@ -16,5 +16,8 @@ if __name__ == "__main__":
         activation_app = ActivationWindow()
         activation_app.mainloop()
         
-    if auth.is_activated():
-        launch_main_app()
+        # Check if the user clicked "Continuar en Modo Prueba"
+        if not getattr(activation_app, 'continue_trial', False) and not auth.is_activated():
+            sys.exit(0)
+            
+    launch_main_app()

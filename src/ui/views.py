@@ -578,19 +578,29 @@ class HorarioView(ctk.CTkFrame):
         self.grid_frame.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.mapa_widgets = {}
 
+    def check_activation(self):
+        from src.core.auth import Authenticator
+        if not Authenticator().is_activated():
+            messagebox.showwarning("Modo Prueba", "La descarga y exportación de horarios solo está disponible en la versión activada.")
+            return False
+        return True
+
     def exp_excel_g(self):
+        if not self.check_activation(): return
         f = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel", "*.xlsx")])
         if f: 
             self.exporter.export_excel_grupos(f)
             messagebox.showinfo("Exportado", f"Guardado en {f}")
 
     def exp_excel_d(self):
+        if not self.check_activation(): return
         f = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel", "*.xlsx")])
         if f: 
             self.exporter.export_excel_docentes(f)
             messagebox.showinfo("Exportado", f"Guardado en {f}")
 
     def exp_pdf_g(self):
+        if not self.check_activation(): return
         f = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF", "*.pdf")])
         if f: 
             self.exporter.export_pdf_grupos(f)
